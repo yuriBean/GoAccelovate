@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 export default function EditTaskPage() {
   const router = useRouter();
@@ -11,7 +13,9 @@ export default function EditTaskPage() {
 
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
   const [error, setError] = useState("");
+  const [validationError, setValidationError] = useState(""); 
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -32,34 +36,51 @@ export default function EditTaskPage() {
 
   const updateTask = async (e) => {
     e.preventDefault();
-    if (!title.trim()) return;
 
+    if (!title.trim()) {
+      setValidationError("Title cannot be empty.");
+      return; 
+    }
+
+    setValidationError(""); 
+    setUpdating(true);
     try {
       await axios.put(`/api/tasks`, { id: taskId, title });
       router.push("/dashboard");
     } catch {
       setError("Failed to update task.");
+    } finally {
+      setUpdating(false);
     }
   };
 
-  if (loading) return <p className="text-center">Loading...</p>;
+  if (loading) return <p className="py-10 text-center text-white">Loading...</p>;
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Edit Task</h2>
+    <div className="relative z-10 max-w-2xl mx-auto p-6">
+      <h1 className="text-4xl font-bold mb-4">Edit Task</h1>
+      
       {error && <p className="text-red-500 mb-4">{error}</p>}
-      <form onSubmit={updateTask} className="space-y-4">
+      
+      {validationError && <p className="text-red-500 mb-4">{validationError}</p>}
+
+      <form onSubmit={updateTask} className="flex flex-col space-y-4">
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full border px-4 py-2 rounded"
+          className="flex-1 px-4 py-2 border border-gray-300 rounded text-black"
           placeholder="Task title"
         />
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-black border border-white text-white px-4 py-2 rounded flex items-center justify-center gap-2"
+          disabled={updating || !title.trim()} 
         >
-          Update
+          {updating ? (
+            <FontAwesomeIcon icon={faSpinner} spin className="text-gray-500 text-xl" />
+          ) : (
+            "Update"
+          )}
         </button>
       </form>
     </div>

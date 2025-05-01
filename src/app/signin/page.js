@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
+import Link from "next/link";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -16,9 +17,19 @@ export default function SignInPage() {
   useEffect(() => {
     if (session) router.replace("/dashboard");
   }, [session]);
-  
+
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    if (!email || !password) {
+      return setError("Both email and password are required");
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      return setError("Please enter a valid email address");
+    }
+
     const res = await signIn("credentials", {
       redirect: false,
       email,
@@ -33,37 +44,39 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50">
+    <div className="relative z-10 max-w-2xl mx-auto p-6">
+        <h2 className="text-4xl font-bold mb-6 text-center">Sign In</h2>
+
       <form
         onSubmit={handleLogin}
-        className="bg-white shadow-md p-8 rounded-lg w-full max-w-md"
+        className="flex flex-col gap-2 mb-6"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <input
-          className="input"
-          placeholder="Email"
+            className="flex-1 px-4 py-2 border rounded text-black"
+            placeholder="Email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          className="input"
-          placeholder="Password"
+            className="flex-1 px-4 py-2 border rounded text-black"
+            placeholder="Password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button className="btn w-full mt-4" type="submit">
+        <button className="mt-5 bg-black border border-white  text-white px-4 py-2 rounded" type="submit">
           Sign In
         </button>
         <button
           type="button"
-          className="btn w-full mt-2 bg-red-500 hover:bg-red-600"
+          className="bg-red-500 border border-white text-white px-4 py-2 rounded"
           onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
         >
           Sign in with Google
         </button>
+        <small>Don't have an account? <Link href="/register" className="font-bold underline hover:text-gray-600">Sign up </Link></small>
       </form>
     </div>
   );
