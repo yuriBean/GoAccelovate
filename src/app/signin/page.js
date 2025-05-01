@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -76,14 +78,8 @@ export default function SignInPage() {
           type="submit"
           disabled={loading} 
         >
-          {loading ? "Signing In..." : "Sign In"}
+          {loading ? <FontAwesomeIcon icon={faSpinner} spin className="text-gray-500 text-xl" /> : "Sign In"}
         </button>
-
-        {loading && (
-          <div className="mt-4 text-center">
-            <span>Loading...</span> 
-          </div>
-        )}
 
         <button
           type="button"

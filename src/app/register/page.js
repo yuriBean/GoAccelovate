@@ -8,6 +8,8 @@ import bcrypt from "bcryptjs";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -93,13 +95,9 @@ export default function RegisterPage() {
           className="mt-5 bg-black border border-white text-white px-4 py-2 rounded"
           disabled={loading} 
         >
-          {loading ? "Registering..." : "Register"} 
+          {loading ? <FontAwesomeIcon icon={faSpinner} spin className="text-gray-500 text-xl" />: "Register"} 
         </button>
-        {loading && (
-          <div className="mt-4 text-center">
-            <span>Loading...</span> 
-          </div>
-        )}
+        
         <button
           type="button"
           className="bg-red-500 border border-white text-white px-4 py-2 rounded"
