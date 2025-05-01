@@ -19,7 +19,7 @@ export default function RegisterPage() {
 
   useEffect(() => {
     if (session) router.replace("/dashboard");
-  }, [session]);
+  }, [session, router]);
   
   const handleRegister = async (e) => {
     e.preventDefault();

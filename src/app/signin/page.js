@@ -16,7 +16,7 @@ export default function SignInPage() {
 
   useEffect(() => {
     if (session) router.replace("/dashboard");
-  }, [session]);
+  }, [session, router]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -76,7 +76,7 @@ export default function SignInPage() {
         >
           Sign in with Google
         </button>
-        <small>Don't have an account? <Link href="/register" className="font-bold underline hover:text-gray-600">Sign up </Link></small>
+        <small>Don&apos;t have an account? <Link href="/register" className="font-bold underline hover:text-gray-600">Sign up </Link></small>
       </form>
     </div>
   );
